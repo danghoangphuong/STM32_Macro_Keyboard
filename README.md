@@ -14,3 +14,5 @@ PCB
 <img width="972" height="691" alt="image" src="https://github.com/user-attachments/assets/ad56f306-b8dd-48ce-9e2f-ffe1a0003999" />
 
 <img width="917" height="669" alt="image" src="https://github.com/user-attachments/assets/03292751-246b-483c-a622-e41d40a8a3bc" />
+
+<img width="983" height="700" alt="image" src="https://github.com/user-attachments/assets/d6c0117c-7872-4eab-a95b-de87553b83fa" />
