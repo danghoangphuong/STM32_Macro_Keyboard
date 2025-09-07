@@ -1,0 +1,30 @@
+Added Component: Designator=JP2(JP 1x5 CT)
+Add component (AddParameter): Name = "Chung_Loai"; Value = "C?m"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Don_Vi"; Value = "Con"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ghi_Chu"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Kieu_Chan"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ma_Hang"; Value = "MH004006"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ten_Linh_Kien"; Value = "Jump Ðon Cái 2.54MM 1x20P Th?ng"; VariantName = "[No Variations]"
+Added Component: Designator=JP3(JP 1x7 CT)
+Add component (AddParameter): Name = "Chung_Loai"; Value = "C?m"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Don_Vi"; Value = "Con"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ghi_Chu"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Kieu_Chan"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ma_Hang"; Value = "MH004006"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ten_Linh_Kien"; Value = "Jump Ðon Cái 2.54MM 1x20P Th?ng"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=JP2-1
+Added Pin To Net: NetName=GND Pin=JP3-2
+Added Pin To Net: NetName=+3.3V Pin=JP2-2
+Added Pin To Net: NetName=+3.3V Pin=JP3-3
+Added Net: Name=+3.3V
+Added Pin To Net: NetName=DS1307_SCL Pin=JP2-4
+Added Pin To Net: NetName=DS1307_SCL Pin=JP3-5
+Added Pin To Net: NetName=DS1307_SCL Pin=STM1-35
+Added Net: Name=DS1307_SCL
+Added Pin To Net: NetName=DS1307_SDA Pin=JP2-3
+Added Pin To Net: NetName=DS1307_SDA Pin=JP3-4
+Added Pin To Net: NetName=DS1307_SDA Pin=STM1-36
+Added Net: Name=DS1307_SDA
+Added Member To Class: ClassName=schematic Member=Component JP2 JP 1x5 2.54
+Added Member To Class: ClassName=schematic Member=Component JP3 JP 1x7 2.54
+Added Room: Name=schematic

@@ -22,7 +22,7 @@
  */
 #include "ssd1306.h"
 
-extern I2C_HandleTypeDef hi2c1;
+extern I2C_HandleTypeDef hi2c2;
 /* Write command */
 #define SSD1306_WRITECOMMAND(command)      ssd1306_I2C_Write(SSD1306_I2C_ADDR, 0x00, (command))
 /* Write data */
@@ -167,7 +167,7 @@ uint8_t SSD1306_Init(void) {
 	ssd1306_I2C_Init();
 	
 	/* Check if LCD connected to I2C */
-	if (HAL_I2C_IsDeviceReady(&hi2c1, SSD1306_I2C_ADDR, 1, 20000) != HAL_OK) {
+	if (HAL_I2C_IsDeviceReady(&hi2c2, SSD1306_I2C_ADDR, 1, 20000) != HAL_OK) {
 		/* Return false */
 		return 0;
 	}
@@ -645,7 +645,7 @@ dt[0] = reg;
 uint8_t i;
 for(i = 0; i < count; i++)
 dt[i+1] = data[i];
-HAL_I2C_Master_Transmit(&hi2c1, address, dt, count+1, 10);
+HAL_I2C_Master_Transmit(&hi2c2, address, dt, count+1, 10);
 }
 
 
@@ -653,5 +653,5 @@ void ssd1306_I2C_Write(uint8_t address, uint8_t reg, uint8_t data) {
 	uint8_t dt[2];
 	dt[0] = reg;
 	dt[1] = data;
-	HAL_I2C_Master_Transmit(&hi2c1, address, dt, 2, 10);
+	HAL_I2C_Master_Transmit(&hi2c2, address, dt, 2, 10);
 }

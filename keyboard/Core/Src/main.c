@@ -45,6 +45,7 @@ ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
 I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef hi2c2;
 
 UART_HandleTypeDef huart1;
 
@@ -59,6 +60,7 @@ static void MX_DMA_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_ADC1_Init(void);
+static void MX_I2C2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -70,6 +72,7 @@ static void MX_ADC1_Init(void);
 #include "usbd_hid.h"
 #include "fonts.h"
 #include "ssd1306.h"
+#include "DS1307.h"
 
 #define ADC_BUFF_LEN 32		// sample to moving average filter
 #define ADC_THRESHOLD 80 // threshold for changing %volume
@@ -86,27 +89,26 @@ uint16_t adc_val[ADC_BUFF_LEN];
 uint8_t volume = 0;
 uint16_t volume_now, volume_old = 0;
 
-char buff_adc[20];
-char buff_volume[20];
-char buff_key[20];
+char buff_time[20];
+char buff_day[20];
+
+//===================Time==================
+DS1307_Typedef time_data;
 
 //=========================key press handle=============
-uint8_t Key_Map[10] = {
-    0x00,   // 0
-    0x1E,   // 1
-    0x1F,   // 2
-    0x20,   // 3
-    0x21,   // 4
-    0x22,   // 5
-    0x23,   // 6
-    0x24,   // 7
-    0x25,   // 8
-    0x26    // 9
-};
+typedef enum
+{
+	KEY_PrtSc = 1, //0x46
+	KEY_CUT = 2, // 0x02 + 0x1B
+	KEY_COPY = 3, // 0x02 + 0x06
+	KEY_PASTE = 4, // 0x02 + 0x19
+	KEY_MUTE = 5,
+}Macro_key;
 
 
 typedef struct
 {
+	uint8_t id;
 	uint8_t modifier;
 	uint8_t reserved;
 	uint8_t keycode1;
@@ -117,160 +119,131 @@ typedef struct
 	uint8_t keycode6;	
 }Keyboard_Report_Des;
 
-Keyboard_Report_Des hid_keyboard = {0,0,0,0,0,0,0,0};
+Keyboard_Report_Des hid_keyboard = {0x01,0,0,0,0,0,0,0,0};
 
 uint32_t KB_Scan()	// Scan button
 {
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, 0);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4|GPIO_PIN_3, 1);
-	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3))
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 0);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4|GPIO_PIN_5, 1);
+	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8))
 	{
-		return 1;
+		return KEY_PrtSc;
 	}
-	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4))
+	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15))
 	{
-		return 2;
+		return KEY_CUT;
 	}
-	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5))
+	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14))
 	{
-		return 3;
+		return KEY_COPY;
 	}
 	
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, 0);
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3|GPIO_PIN_5, 1);
-	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3))
+	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8))
 	{
-		return 4;
+		return KEY_PASTE;
 	}
-	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4))
+	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15))
 	{
-		return 5;
+		return KEY_MUTE;
 	}
-	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5))
+	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14))
 	{
 		return 6;
 	}
 	
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 0);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5|GPIO_PIN_4, 1);
-	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_3))
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, 0);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3|GPIO_PIN_4, 1);
+	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8))
 	{
 		return 7;
 	}
-	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4))
+	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15))
 	{
 		return 8;
 	}
-	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5))
+	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14))
 	{
 		return 9;
 	}
 	return 0;
 }
 
-
-void Key_board_send_report(uint32_t pressed_key) // send to pc
+void Send_key(uint8_t modifier, uint8_t keycode)
 {
-	static uint32_t last_tick = 0;
-    static uint8_t send_state = 0;
-	if (pressed_key != 0 && send_state == 0) 
-	{
-		switch(pressed_key)
-		{
-			case 1:
-				hid_keyboard.keycode1 = 0x1E;
-				break;
-			case 2:
-				hid_keyboard.keycode1 = 0x1F;
-				break;
-			case 3:
-				hid_keyboard.keycode1 = 0x20;
-				break;
-			case 4:
-				hid_keyboard.keycode1 = 0x21;
-				break;
-			case 5:
-				hid_keyboard.keycode1 = 0x22;
-				break;
-			case 6:
-				hid_keyboard.keycode1 = 0x23;
-				break;
-			case 7:
-				hid_keyboard.keycode1 = 0x24;
-				break;
-			case 8:
-				hid_keyboard.keycode1 = 0x25;
-				break;
-			case 9:
-				hid_keyboard.keycode1 = 0x26;
-				break;
-			default: break;
-		}
-		USBD_HID_SendReport(&hUsbDeviceFS,(uint8_t*)&hid_keyboard, sizeof(hid_keyboard));
-		last_tick = HAL_GetTick();
-		send_state = 1;
-	}
-	 if (send_state == 1 && (HAL_GetTick() - last_tick) > 50) 
-	 {
-		hid_keyboard.keycode1 = 0x00;
-		USBD_HID_SendReport(&hUsbDeviceFS,(uint8_t*)&hid_keyboard, sizeof(hid_keyboard));
-		send_state = 0;
-	 }
+	hid_keyboard.modifier = modifier; // Ctrl, shift, alt
+	hid_keyboard.keycode1 = keycode; // copy, paste, cut, ...
+	
+
+    USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&hid_keyboard, sizeof(hid_keyboard));
+    HAL_Delay(50);
+
+	hid_keyboard.modifier = 0x00; // Ctrl, shift, alt
+	hid_keyboard.keycode1 = 0x00; // copy, paste, cut, ...
+    USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&hid_keyboard, sizeof(hid_keyboard));
+    HAL_Delay(50);
+}
+
+void Send_consumer(uint8_t keycode)
+{
+	uint8_t consumer_report[2] = {0x02, 0x00};
+
+	consumer_report[1] = keycode;
+	USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&consumer_report, sizeof(consumer_report));
+    HAL_Delay(50);
+	
+	consumer_report[1] = 0x00; // copy, paste, cut, ...
+    USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&consumer_report, sizeof(consumer_report));
+    HAL_Delay(50);
 }
 
 
-void Keypad_Handle(void)
+void Keyboard_Handle(void)
 {
-    static uint32_t last_key = 0;
-    static uint32_t stable_key = 0;
-    static uint32_t last_tick = 0;
-    static uint8_t pressed = 0;
-	static uint32_t last_stable_key = 0;
-
-    uint32_t now = HAL_GetTick();
-    key = KB_Scan();
-
-    if (key != last_key)
-    {
-        last_tick = now;
-        last_key = key;
-    }
-
-    if ((now - last_tick) >= 10)
-    {
-        if (stable_key != key)
-        {
-            stable_key = key;
-
-            if (stable_key != 0 && stable_key != last_stable_key)
-            {
-                // Key Pressed
-				hid_keyboard.keycode1 = Key_Map[stable_key];
-                USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&hid_keyboard, sizeof(hid_keyboard));
-            }
-            else if (stable_key == 0 && last_stable_key != 0)
-            {
-                // ===== Key Released =====
-                hid_keyboard.keycode1 = 0x00;
-                USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&hid_keyboard, sizeof(hid_keyboard));
-            }
-
-            last_stable_key = stable_key;
-        }
-    }
+	uint32_t key = KB_Scan();
+	switch(key)
+	{
+		case KEY_PrtSc:
+			Send_key(0x00, 0x46);
+			break;
+		case KEY_CUT: // num 2
+			Send_key(0x01, 0x1B);
+			break;
+		case KEY_COPY: //num 3
+			Send_key(0x01,0x06);
+			break;
+		case KEY_PASTE: // num 4
+			Send_key(0x01,0x19);
+			break;
+		case KEY_MUTE:	// num 5
+			Send_consumer(0x04);
+			break;
+		default:
+			break;
+			
+	}
 }
 //==========================Display handle==============
+const char dow_arr[][10] = {{"SUNDAY"},{"MONDAY"},{"TUESDAY"},{"WEDNESDAY"},
+							{"THURSDAY"},{"FRIDAY"},{"SATURDAY"}}; //day of week 
+
 void Oled_display() // display date, month, year and keyboard map
 {
-    SSD1306_GotoXY(0, 0);
-    SSD1306_Puts("                 ", &Font_7x10, 1);
-    SSD1306_GotoXY(0, 0);
-    sprintf(buff_volume, "Volume: %3d", volume_now);
-    SSD1306_Puts(buff_volume, &Font_7x10, 1);
+	DS1307_read(&time_data);
 	
-//	SSD1306_GotoXY(0,20);
-//	sprintf(buff_key, "Button: %d", key);
-//	SSD1306_Puts(buff_key, &Font_7x10, 1);
+	sprintf(buff_time, "%02d : %02d : %02d", time_data.hour, time_data.min, time_data.sec);
+    SSD1306_GotoXY(0, 0);
+    SSD1306_Puts(buff_time, &Font_7x10, 1);
+	
+    SSD1306_GotoXY(0, 20);
+    sprintf(buff_day, "%02d / %02d / 20%02d", time_data.date, time_data.month, time_data.year);
+    SSD1306_Puts(buff_day, &Font_7x10, 1);
+	
+	uint8_t dow = DS1307_get_day_of_week(&time_data); // GET DAY
+	SSD1306_GotoXY(0, 40);
+    sprintf(buff_day, "%s", dow_arr[dow]);
+    SSD1306_Puts(buff_day, &Font_7x10, 1);
 	SSD1306_UpdateScreen();
 }
 
@@ -337,6 +310,8 @@ void HID_VolumeControl() // rotary switch adjust volume
     USBD_HID_SendReport(&hUsbDeviceFS, report, sizeof(report));
     HAL_Delay(10);
 }
+
+
 /* USER CODE END 0 */
 
 /**
@@ -373,10 +348,20 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
   MX_ADC1_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
   SSD1306_Init();
+  DS1307_Init(&hi2c1);
   HAL_ADCEx_Calibration_Start(&hadc1);
   HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_val, ADC_BUFF_LEN);
+  
+//  time_data.hour = 14;
+//  time_data.min = 40;
+//  time_data.sec = 50;
+//  time_data.date = 5;
+//  time_data.month = 9;
+//  time_data.year = 25;
+//  DS1307_write(&time_data);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -388,11 +373,13 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  
 	  // Receive ADC value: 0 - 4095 map 0 - 100
+	Keyboard_Handle();
 	static uint32_t time = 0;
 	volume_now = adc_val[0] * 100 / 4095;
 	if(HAL_GetTick() - time > 20)
 	{
-		//Oled_display();
+		Oled_display();
+ 
 		if (volume_now > volume_old + 1)   
 		{
 			HID_VolumeControl(); 
@@ -405,12 +392,9 @@ int main(void)
 		}
 		time = HAL_GetTick();
 	}
-	 
-//	Keypad_Handle();
 
-	  
   }
-  /* USER CODE END 3 */
+  /* USER A END 3 */
 }
 
 /**
@@ -494,9 +478,9 @@ static void MX_ADC1_Init(void)
 
   /** Configure Regular Channel
   */
-  sConfig.Channel = ADC_CHANNEL_6;
+  sConfig.Channel = ADC_CHANNEL_7;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -523,7 +507,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 400000;
+  hi2c1.Init.ClockSpeed = 100000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -538,6 +522,40 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief I2C2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C2_Init(void)
+{
+
+  /* USER CODE BEGIN I2C2_Init 0 */
+
+  /* USER CODE END I2C2_Init 0 */
+
+  /* USER CODE BEGIN I2C2_Init 1 */
+
+  /* USER CODE END I2C2_Init 1 */
+  hi2c2.Instance = I2C2;
+  hi2c2.Init.ClockSpeed = 400000;
+  hi2c2.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c2.Init.OwnAddress1 = 0;
+  hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c2.Init.OwnAddress2 = 0;
+  hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C2_Init 2 */
+
+  /* USER CODE END I2C2_Init 2 */
 
 }
 
@@ -608,16 +626,22 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, ROW1_Pin|ROW2_Pin|ROW3_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PA3 PA4 PA5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5;
+  /*Configure GPIO pins : COL3_Pin COL2_Pin */
+  GPIO_InitStruct.Pin = COL3_Pin|COL2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB3 PB4 PB5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5;
+  /*Configure GPIO pin : COL1_Pin */
+  GPIO_InitStruct.Pin = COL1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(COL1_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : ROW1_Pin ROW2_Pin ROW3_Pin */
+  GPIO_InitStruct.Pin = ROW1_Pin|ROW2_Pin|ROW3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

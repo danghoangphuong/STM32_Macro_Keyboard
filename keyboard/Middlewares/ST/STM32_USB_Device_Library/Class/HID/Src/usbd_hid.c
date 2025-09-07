@@ -158,7 +158,7 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgFSDesc[USB_HID_CONFIG_DESC_SIZ]  __ALIG
   0x01,         /*bNumEndpoints*/
   0x03,         /*bInterfaceClass: HID*/
   0x01,         /*bInterfaceSubClass : 1=BOOT, 0=no boot*/
-  0x02,         /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
+  0x01,         /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
   0,            /*iInterface: Index of string descriptor*/
   /******************** Descriptor of Joystick Mouse HID ********************/
   /* 18 */
@@ -192,7 +192,7 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgHSDesc[USB_HID_CONFIG_DESC_SIZ]  __ALIG
   USB_HID_CONFIG_DESC_SIZ,
   /* wTotalLength: Bytes returned */
   0x00,
-  0x02,         /*bNumInterfaces: 1 interface*/
+  0x01,         /*bNumInterfaces: 1 interface*/
   0x01,         /*bConfigurationValue: Configuration value*/
   0x00,         /*iConfiguration: Index of string descriptor describing
   the configuration*/
@@ -208,7 +208,7 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgHSDesc[USB_HID_CONFIG_DESC_SIZ]  __ALIG
   0x01,         /*bNumEndpoints*/
   0x03,         /*bInterfaceClass: HID*/
   0x01,         /*bInterfaceSubClass : 1=BOOT, 0=no boot*/
-  0x01,         /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
+  0x02,         /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
   0,            /*iInterface: Index of string descriptor*/
   /******************** Descriptor of Joystick Mouse HID ********************/
   /* 18 */
@@ -317,77 +317,84 @@ __ALIGN_BEGIN static uint8_t USBD_HID_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_
 
 __ALIGN_BEGIN static uint8_t HID_MOUSE_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE]  __ALIGN_END =
 {
-	//Keyboard descriptor
-	0x05, 0x01,                    // USAGE_PAGE (Generic Desktop)
-	0x09, 0x06,                    // USAGE (Keyboard)
-	0xa1, 0x01,					// COLLECTION (Application)
-	0x85, 0x01,					//Report ID 1
-	0x05, 0x07,                    //   USAGE_PAGE (Keyboard)
-	0x19, 0xe0,                    //   USAGE_MINIMUM (Keyboard LeftControl)
-	0x29, 0xe7,                    //   USAGE_MAXIMUM (Keyboard Right GUI)
-	0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
-	0x25, 0x01,                    //   LOGICAL_MAXIMUM (1)
-	0x75, 0x01,                    //   REPORT_SIZE (1)
-	0x95, 0x08,                    //   REPORT_COUNT (8)
-	0x81, 0x02,                    //   INPUT (Data,Var,Abs)
-	0x95, 0x01,                    //   REPORT_COUNT (1)
-	0x75, 0x08,                    //   REPORT_SIZE (8)
-	0x81, 0x03,                    //   INPUT (Cnst,Var,Abs)
-	0x95, 0x05,                    //   REPORT_COUNT (5)
-	0x75, 0x01,                    //   REPORT_SIZE (1)
-	0x05, 0x08,                    //   USAGE_PAGE (LEDs)
-	0x19, 0x01,                    //   USAGE_MINIMUM (Num Lock)
-	0x29, 0x05,                    //   USAGE_MAXIMUM (Kana)
-	0x91, 0x02,                    //   OUTPUT (Data,Var,Abs)
-	0x95, 0x01,                    //   REPORT_COUNT (1)
-	0x75, 0x03,                    //   REPORT_SIZE (3)
-	0x91, 0x03,                    //   OUTPUT (Cnst,Var,Abs)
-	0x95, 0x06,                    //   REPORT_COUNT (6)
-	0x75, 0x08,                    //   REPORT_SIZE (8)
-	0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
-	0x25, 0x65,                    //   LOGICAL_MAXIMUM (101)
-	0x05, 0x07,                    //   USAGE_PAGE (Keyboard)
-	0x19, 0x00,                    //   USAGE_MINIMUM (Reserved (no event indicated))
-	0x29, 0x65,                    //   USAGE_MAXIMUM (Keyboard Application)
-	0x81, 0x00,                    //   INPUT (Data,Ary,Abs)
-	0xc0,
-	
-	//Consumer
-	0x05, 0x0C,        // Usage Page (Consumer)
-	0x09, 0x01,        // Usage (Consumer Control)
-	0xA1, 0x01,        // Collection (Application)
-	0x85, 0x02,        //   Report ID (2)
-	0x15, 0x00,        //   Logical Minimum (0)
-	0x25, 0x01,        //   Logical Maximum (1)
-	0x75, 0x01,        //   Report Size (1)
-	0x95, 0x01,        //   Report Count (1)
-	0x09, 0xE9,        //   Usage (Volume Up)
-	0x81, 0x06,        //   Input (Data,Var,Rel)
-	0x95, 0x01,        //   Report Count (1)
-	0x09, 0xEA,        //   Usage (Volume Down)
-	0x81, 0x06,        //   Input (Data,Var,Rel)
-	0x95, 0x06,        //   Report Count (6) - padding
-	0x81, 0x03,        //   Input (Const,Var,Abs)
-	0xC0       
-};
+ // ================== Keyboard ==================
+    0x05, 0x01,        // USAGE_PAGE (Generic Desktop)
+    0x09, 0x06,        // USAGE (Keyboard)
+    0xA1, 0x01,        // COLLECTION (Application)
+    0x85, 0x01,        //   REPORT_ID (1)
 
-//__ALIGN_BEGIN static uint8_t HID_CONSUMER_ReportDesc[HID_VOLUME_REPORT_DESC_SIZE] __ALIGN_END =
-//{
-//    0x05, 0x0C,        // USAGE_PAGE (Consumer Devices)
-//    0x09, 0x01,        // USAGE (Consumer Control)
-//    0xA1, 0x01,        // COLLECTION (Application)
-//    0x15, 0x00,        //   LOGICAL_MINIMUM (0)
-//    0x26, 0xFF, 0x00,  //   LOGICAL_MAXIMUM (255)
-//    0x75, 0x08,        //   REPORT_SIZE (8)
-//    0x95, 0x01,        //   REPORT_COUNT (1)
-//    0x09, 0xE0,        //   USAGE (Volume)
-//    0x81, 0x02,        //   INPUT (Data,Var,Abs)
-//    0xC0               // END_COLLECTION
-//};
+    // Modifier keys (8 bits)
+    0x05, 0x07,        //   USAGE_PAGE (Keyboard)
+    0x19, 0xE0,        //   USAGE_MINIMUM (Keyboard LeftControl)
+    0x29, 0xE7,        //   USAGE_MAXIMUM (Keyboard Right GUI)
+    0x15, 0x00,        //   LOGICAL_MINIMUM (0)
+    0x25, 0x01,        //   LOGICAL_MAXIMUM (1)
+    0x75, 0x01,        //   REPORT_SIZE (1)
+    0x95, 0x08,        //   REPORT_COUNT (8)
+    0x81, 0x02,        //   INPUT (Data,Var,Abs)
+
+    // Reserved
+    0x95, 0x01,        //   REPORT_COUNT (1)
+    0x75, 0x08,        //   REPORT_SIZE (8)
+    0x81, 0x03,        //   INPUT (Cnst,Var,Abs)
+
+    // LED output (Num Lock, Caps Lock, Scroll Lock, Compose, Kana)
+    0x95, 0x05,        //   REPORT_COUNT (5)
+    0x75, 0x01,        //   REPORT_SIZE (1)
+    0x05, 0x08,        //   USAGE_PAGE (LEDs)
+    0x19, 0x01,        //   USAGE_MINIMUM (Num Lock)
+    0x29, 0x05,        //   USAGE_MAXIMUM (Kana)
+    0x91, 0x02,        //   OUTPUT (Data,Var,Abs)
+
+    // LED padding
+    0x95, 0x01,        //   REPORT_COUNT (1)
+    0x75, 0x03,        //   REPORT_SIZE (3)
+    0x91, 0x03,        //   OUTPUT (Cnst,Var,Abs)
+
+    // Keycodes (6 bytes)
+    0x95, 0x06,        //   REPORT_COUNT (6)
+    0x75, 0x08,        //   REPORT_SIZE (8)
+    0x15, 0x00,        //   LOGICAL_MINIMUM (0)
+    0x25, 0x65,        //   LOGICAL_MAXIMUM (101)
+    0x05, 0x07,        //   USAGE_PAGE (Keyboard)
+    0x19, 0x00,        //   USAGE_MINIMUM (Reserved)
+    0x29, 0x65,        //   USAGE_MAXIMUM (Keyboard Application)
+    0x81, 0x00,        //   INPUT (Data,Ary,Abs)
+
+    0xC0,              // END_COLLECTION
+
+	// ================== Consumer Control (Volume + Mute) ==================
+	0x05, 0x0C,        // USAGE_PAGE (Consumer Devices)
+	0x09, 0x01,        // USAGE (Consumer Control)
+	0xA1, 0x01,        // COLLECTION (Application)
+	0x85, 0x02,        //   REPORT_ID (2)
+
+	0x15, 0x00,        //   LOGICAL_MINIMUM (0)
+	0x25, 0x01,        //   LOGICAL_MAXIMUM (1)
+	0x75, 0x01,        //   REPORT_SIZE (1)
+
+	0x95, 0x01,
+	0x09, 0xE9,        //   USAGE (Volume Up)
+	0x81, 0x02,        //   INPUT (Data,Var,Abs)
+
+	0x95, 0x01,
+	0x09, 0xEA,        //   USAGE (Volume Down)
+	0x81, 0x02,        //   INPUT (Data,Var,Abs)
+
+	0x95, 0x01,
+	0x09, 0xE2,        //   USAGE (Mute)
+	0x81, 0x02,        //   INPUT (Data,Var,Abs)
+
+	0x95, 0x05,        //   Padding (5 bits)
+	0x81, 0x03,        //   INPUT (Const,Var,Abs)
+
+	0xC0               // END_COLLECTION
+};
 
 /**
   * @}
   */
+
 /** @defgroup USBD_HID_Private_Functions
   * @{
   */

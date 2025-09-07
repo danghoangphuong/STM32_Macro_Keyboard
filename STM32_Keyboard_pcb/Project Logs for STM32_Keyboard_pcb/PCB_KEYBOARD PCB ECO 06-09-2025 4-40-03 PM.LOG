@@ -1,0 +1,12 @@
+Added Component: Designator=VR1(Bien Tro Volume Don)
+Add component (AddParameter): Name = "Chung_Loai"; Value = "C?m"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Don_Vi"; Value = "Con"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ghi_Chu"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Kieu_Chan"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ma_Hang"; Value = "MH001417"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ten_Linh_Kien"; Value = "Tri?t Áp Ðon B10K"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=VR1-1
+Added Pin To Net: NetName=VOL_CONTROL Pin=VR1-2
+Added Pin To Net: NetName=+3.3 Pin=VR1-3
+Added Member To Class: ClassName=schematic Member=Component VR1 10K
+Added Room: Name=schematic

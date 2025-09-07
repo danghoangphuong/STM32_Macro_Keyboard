@@ -46,3 +46,4 @@ keyboard\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.
 keyboard\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
 keyboard\main.o: ../Lib/fonts.h
 keyboard\main.o: ../Lib/ssd1306.h
+keyboard\main.o: ../Lib/DS1307.h

@@ -1,0 +1,5 @@
+Removed Pin From Net: NetName=+3.3 Pin=VR1-1
+Removed Pin From Net: NetName=GND Pin=VR1-3
+Added Pin To Net: NetName=GND Pin=VR1-1
+Added Pin To Net: NetName=+3.3 Pin=VR1-3
+Added Room: Name=schematic
