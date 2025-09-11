@@ -363,7 +363,7 @@ __ALIGN_BEGIN static uint8_t HID_MOUSE_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE]  _
 
     0xC0,              // END_COLLECTION
 
-	// ================== Consumer Control (Volume + Mute) ==================
+	// ================== Consumer Control (Volume + Mute + Media) ==================
 	0x05, 0x0C,        // USAGE_PAGE (Consumer Devices)
 	0x09, 0x01,        // USAGE (Consumer Control)
 	0xA1, 0x01,        // COLLECTION (Application)
@@ -371,24 +371,38 @@ __ALIGN_BEGIN static uint8_t HID_MOUSE_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE]  _
 
 	0x15, 0x00,        //   LOGICAL_MINIMUM (0)
 	0x25, 0x01,        //   LOGICAL_MAXIMUM (1)
-	0x75, 0x01,        //   REPORT_SIZE (1)
+	0x75, 0x01,        //   REPORT_SIZE (1 bit per control)
 
-	0x95, 0x01,
+	// -------- Bit 0 --------
+	0x95, 0x01,        //   REPORT_COUNT (1)
 	0x09, 0xE9,        //   USAGE (Volume Up)
 	0x81, 0x02,        //   INPUT (Data,Var,Abs)
 
-	0x95, 0x01,
+	// -------- Bit 1 --------
+	0x95, 0x01,        
 	0x09, 0xEA,        //   USAGE (Volume Down)
-	0x81, 0x02,        //   INPUT (Data,Var,Abs)
+	0x81, 0x02,        
 
-	0x95, 0x01,
+	// -------- Bit 2 --------
+	0x95, 0x01,        
 	0x09, 0xE2,        //   USAGE (Mute)
-	0x81, 0x02,        //   INPUT (Data,Var,Abs)
+	0x81, 0x02,        
 
-	0x95, 0x05,        //   Padding (5 bits)
+	// -------- Bit 3 --------
+	0x95, 0x01,        
+	0x09, 0xCD,        //   USAGE (Play/Pause)
+	0x81, 0x02,        
+
+	// -------- Bit 4 --------
+	0x95, 0x01,        
+	0x09, 0xB5,        //   USAGE (Scan Next Track)
+	0x81, 0x02,        
+
+	// -------- Padding --------
+	0x95, 0x03,        //   REPORT_COUNT (3) -> padding bits (bit5..bit7)
 	0x81, 0x03,        //   INPUT (Const,Var,Abs)
 
-	0xC0               // END_COLLECTION
+	0xC0              // END_COLLECTION
 };
 
 /**

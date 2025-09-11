@@ -27,9 +27,6 @@ Project File Date:  09/05/2025
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\Bin'
 Build target 'keyboard'
-compiling usb_device.c...
-compiling usbd_hid.c...
-compiling usbd_conf.c...
 compiling main.c...
 ../Lib/fonts.h(129): warning:  #1-D: last line of file ends without a newline
   #endif
@@ -39,29 +36,33 @@ compiling main.c...
   #endif
 ../Core/Src/main.c(83): warning:  #1295-D: Deprecated declaration KB_Scan - give arg types
   uint32_t KB_Scan();
-../Core/Src/main.c(126): warning:  #188-D: enumerated type mixed with another type
+../Core/Src/main.c(130): warning:  #188-D: enumerated type mixed with another type
   	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 0);
-../Core/Src/main.c(127): warning:  #188-D: enumerated type mixed with another type
+../Core/Src/main.c(131): warning:  #188-D: enumerated type mixed with another type
   	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4|GPIO_PIN_5, 1);
-../Core/Src/main.c(141): warning:  #188-D: enumerated type mixed with another type
+../Core/Src/main.c(145): warning:  #188-D: enumerated type mixed with another type
   	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, 0);
-../Core/Src/main.c(142): warning:  #188-D: enumerated type mixed with another type
+../Core/Src/main.c(146): warning:  #188-D: enumerated type mixed with another type
   	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3|GPIO_PIN_5, 1);
-../Core/Src/main.c(156): warning:  #188-D: enumerated type mixed with another type
+../Core/Src/main.c(160): warning:  #188-D: enumerated type mixed with another type
   	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, 0);
-../Core/Src/main.c(157): warning:  #188-D: enumerated type mixed with another type
+../Core/Src/main.c(161): warning:  #188-D: enumerated type mixed with another type
   	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3|GPIO_PIN_4, 1);
-../Core/Src/main.c(237): warning:  #188-D: enumerated type mixed with another type
-      SSD1306_Puts(buff_time, &Font_7x10, 1);
-../Core/Src/main.c(241): warning:  #188-D: enumerated type mixed with another type
+../Core/Src/main.c(255): warning:  #188-D: enumerated type mixed with another type
+  	SSD1306_Puts(key_noti, &Font_7x10, 1);
+../Core/Src/main.c(269): warning:  #188-D: enumerated type mixed with another type
+  		SSD1306_Puts("                 ", &Font_7x10, 1);
+../Core/Src/main.c(318): warning:  #188-D: enumerated type mixed with another type
+      SSD1306_Puts(buff_time, &Font_11x18, 1);
+../Core/Src/main.c(324): warning:  #188-D: enumerated type mixed with another type
+  	SSD1306_Puts(buff_day, &Font_7x10, 1);
+../Core/Src/main.c(329): warning:  #188-D: enumerated type mixed with another type
       SSD1306_Puts(buff_day, &Font_7x10, 1);
-../Core/Src/main.c(246): warning:  #188-D: enumerated type mixed with another type
-      SSD1306_Puts(buff_day, &Font_7x10, 1);
-../Core/Src/main.c: 13 warnings, 0 errors
+../Core/Src/main.c: 15 warnings, 0 errors
 linking...
-Program Size: Code=24400 RO-data=2316 RW-data=436 ZI-data=5084  
+Program Size: Code=24772 RO-data=5736 RW-data=468 ZI-data=5084  
 FromELF: creating hex file...
-"keyboard\keyboard.axf" - 0 Error(s), 13 Warning(s).
+"keyboard\keyboard.axf" - 0 Error(s), 15 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -85,7 +86,7 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE@6.1.0
       Include file:  CMSIS/Core/Include/tz_context.h
-Build Time Elapsed:  00:00:03
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

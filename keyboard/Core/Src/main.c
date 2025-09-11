@@ -98,11 +98,15 @@ DS1307_Typedef time_data;
 //=========================key press handle=============
 typedef enum
 {
-	KEY_PrtSc = 1, //0x46
-	KEY_CUT = 2, // 0x02 + 0x1B
-	KEY_COPY = 3, // 0x02 + 0x06
-	KEY_PASTE = 4, // 0x02 + 0x19
-	KEY_MUTE = 5,
+	KEY_PrtSc = 1, //0x46 
+	KEY_CUT = 2, // 0x01 + 0x1B office
+	KEY_COPY = 3, // 0x01 + 0x06 office
+	KEY_PASTE = 4, // 0x01 + 0x19 office
+	KEY_MUTE = 5, // 0xE2 media
+	KEY_UNDO = 6, // 0x01 + 0x1D  office
+	KEY_REDO = 7, // 0x01 + 0x1C office
+	KEY_PLAY_PAUSE = 8, // 0xCD  media
+	KEY_NEXT_TRACK = 9 // 0xB5 media
 }Macro_key;
 
 
@@ -150,22 +154,22 @@ uint32_t KB_Scan()	// Scan button
 	}
 	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14))
 	{
-		return 6;
+		return KEY_UNDO;
 	}
 	
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, 0);
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3|GPIO_PIN_4, 1);
 	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8))
 	{
-		return 7;
+		return KEY_REDO;
 	}
 	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15))
 	{
-		return 8;
+		return KEY_PLAY_PAUSE;
 	}
 	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14))
 	{
-		return 9;
+		return KEY_NEXT_TRACK;
 	}
 	return 0;
 }
@@ -201,7 +205,7 @@ void Send_consumer(uint8_t keycode)
 
 void Keyboard_Handle(void)
 {
-	uint32_t key = KB_Scan();
+	key = KB_Scan();
 	switch(key)
 	{
 		case KEY_PrtSc:
@@ -219,32 +223,117 @@ void Keyboard_Handle(void)
 		case KEY_MUTE:	// num 5
 			Send_consumer(0x04);
 			break;
+		case KEY_UNDO:	// num 6
+			Send_key(0x01,0x1D);
+			break;
+		case KEY_REDO:	// num 7
+			Send_key(0x01,0x1C);
+			break;
+		case KEY_PLAY_PAUSE: // num 8
+			Send_consumer(0x08);
+			break;
+		case KEY_NEXT_TRACK: // num 9
+			Send_consumer(0x10);
+			break;
 		default:
 			break;
 			
 	}
 }
 //==========================Display handle==============
-const char dow_arr[][10] = {{"SUNDAY"},{"MONDAY"},{"TUESDAY"},{"WEDNESDAY"},
-							{"THURSDAY"},{"FRIDAY"},{"SATURDAY"}}; //day of week 
+const char dow_arr[][10] = {{"SUN"},{"MON"},{"TUE"},{"WED"},
+							{"THU"},{"FRI"},{"SAT"}}; //day of week 
+
+					
+uint32_t time_update = 0;
+uint8_t is_clear_screen = 0;
+uint8_t clear_x, clear_y = 0;
+							
+void Oled_display_status(char* key_noti, uint8_t x, uint8_t y)
+{
+	SSD1306_GotoXY(x, y);
+	SSD1306_Puts(key_noti, &Font_7x10, 1);
+	SSD1306_UpdateScreen();
+	
+	clear_x = x;
+	clear_y = y;
+	is_clear_screen = 1;
+	time_update = HAL_GetTick();
+}
+
+void Oled_clear_status()
+{
+	if(is_clear_screen && HAL_GetTick() - time_update >= 1000)
+	{
+		SSD1306_GotoXY(clear_x, clear_y);
+		SSD1306_Puts("                 ", &Font_7x10, 1);
+		SSD1306_UpdateScreen();
+		is_clear_screen = 0;
+	}
+}
+
+void Key_press_display_handle()
+{
+	switch(key)
+	{
+		case KEY_PrtSc:
+			Oled_display_status("Screen captured!", 10, 40);
+			break;
+		case KEY_CUT:
+			Oled_display_status("Cut!", 40, 40);
+			break;
+		case KEY_COPY:
+			Oled_display_status("Copied!", 40, 40);
+			break;
+		case KEY_PASTE:
+			Oled_display_status("Pasted!", 40, 40);
+			break;
+		case KEY_MUTE:
+			Oled_display_status("Sound off!", 20, 40);
+			break;
+		case KEY_UNDO:
+			Oled_display_status("Undo!", 40, 40);
+			break;
+		case KEY_REDO:
+			Oled_display_status("Redo!", 40, 40);
+			break;
+		case KEY_PLAY_PAUSE:
+			Oled_display_status("Pause/ Play!", 20, 40);
+			break;
+		case KEY_NEXT_TRACK:
+			Oled_display_status("Next track!", 20, 40);
+			break;
+		default:
+			break;
+	}
+}
 
 void Oled_display() // display date, month, year and keyboard map
 {
 	DS1307_read(&time_data);
 	
-	sprintf(buff_time, "%02d : %02d : %02d", time_data.hour, time_data.min, time_data.sec);
-    SSD1306_GotoXY(0, 0);
-    SSD1306_Puts(buff_time, &Font_7x10, 1);
+	//=========================Time==============================
+	sprintf(buff_time, "%02d:%02d:%02d", time_data.hour, time_data.min, time_data.sec);
+    SSD1306_GotoXY(15, 20); 								//col, row
+    SSD1306_Puts(buff_time, &Font_11x18, 1);
 	
-    SSD1306_GotoXY(0, 20);
-    sprintf(buff_day, "%02d / %02d / 20%02d", time_data.date, time_data.month, time_data.year);
+	//=====================GET DAY====================
+	uint8_t dow = DS1307_get_day_of_week(&time_data); 
+	SSD1306_GotoXY(90, 5);
+	sprintf(buff_day, "%s", dow_arr[dow]);
+	SSD1306_Puts(buff_day, &Font_7x10, 1);
+	
+	//========================Date=======================================
+    SSD1306_GotoXY(5, 5);
+    sprintf(buff_day, "%02d/%02d/20%02d", time_data.date, time_data.month, time_data.year);
     SSD1306_Puts(buff_day, &Font_7x10, 1);
 	
-	uint8_t dow = DS1307_get_day_of_week(&time_data); // GET DAY
-	SSD1306_GotoXY(0, 40);
-    sprintf(buff_day, "%s", dow_arr[dow]);
-    SSD1306_Puts(buff_day, &Font_7x10, 1);
+//	SSD1306_GotoXY(5, 5);
+//    SSD1306_Puts("hello", &Font_7x10, 1);
+	
 	SSD1306_UpdateScreen();
+	
+	Oled_clear_status();
 }
 
 //======================Adjust volume==================
@@ -356,9 +445,9 @@ int main(void)
   HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_val, ADC_BUFF_LEN);
   
 //  time_data.hour = 14;
-//  time_data.min = 40;
-//  time_data.sec = 50;
-//  time_data.date = 5;
+//  time_data.min = 15;
+//  time_data.sec = 30;
+//  time_data.date = 11;
 //  time_data.month = 9;
 //  time_data.year = 25;
 //  DS1307_write(&time_data);
@@ -379,7 +468,8 @@ int main(void)
 	if(HAL_GetTick() - time > 20)
 	{
 		Oled_display();
- 
+		
+		Key_press_display_handle();
 		if (volume_now > volume_old + 1)   
 		{
 			HID_VolumeControl(); 
