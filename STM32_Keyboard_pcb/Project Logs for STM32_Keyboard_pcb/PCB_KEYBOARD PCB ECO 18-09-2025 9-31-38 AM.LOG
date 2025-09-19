@@ -1,0 +1,56 @@
+Removed Pin From Net: NetName=COL3 Pin=STM1-3
+Removed Pin From Net: NetName=COL2 Pin=STM1-4
+Removed Pin From Net: NetName=COL1 Pin=STM1-5
+Added Component: Designator=D10(DIODE 0.5A)
+Add component (AddParameter): Name = "Chung_Loai"; Value = "C?m"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Don_Vi"; Value = "Con"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ghi Chu"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Kieu_Chan"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ma_Hang"; Value = "MH001065"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ten_Linh_Kien"; Value = "Diode 1N4148 DO35 450mA 100V ( 1N4148 DIP)"; VariantName = "[No Variations]"
+Added Component: Designator=D11(DIODE 0.5A)
+Add component (AddParameter): Name = "Chung_Loai"; Value = "C?m"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Don_Vi"; Value = "Con"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ghi Chu"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Kieu_Chan"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ma_Hang"; Value = "MH001065"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ten_Linh_Kien"; Value = "Diode 1N4148 DO35 450mA 100V ( 1N4148 DIP)"; VariantName = "[No Variations]"
+Added Component: Designator=D12(DIODE 0.5A)
+Add component (AddParameter): Name = "Chung_Loai"; Value = "C?m"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Don_Vi"; Value = "Con"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ghi Chu"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Kieu_Chan"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ma_Hang"; Value = "MH001065"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ten_Linh_Kien"; Value = "Diode 1N4148 DO35 450mA 100V ( 1N4148 DIP)"; VariantName = "[No Variations]"
+Added Component: Designator=SW10(MX_Cherry_LED)
+Added Component: Designator=SW11(MX_Cherry_LED)
+Added Component: Designator=SW12(MX_Cherry_LED)
+Added Pin To Net: NetName=COL2 Pin=STM1-3
+Added Pin To Net: NetName=COL1 Pin=STM1-4
+Added Pin To Net: NetName=ROW1 Pin=SW10-1
+Added Pin To Net: NetName=ROW2 Pin=SW11-1
+Added Pin To Net: NetName=ROW3 Pin=SW12-1
+Change Net Name : Old Net Name=COL1 New Net Name=COL2
+Change Net Name : Old Net Name=COL2 New Net Name=COL3
+Change Net Name : Old Net Name=COL3 New Net Name=COL4
+Added Pin To Net: NetName=COL1 Pin=D10-1
+Added Pin To Net: NetName=COL1 Pin=D11-1
+Added Pin To Net: NetName=COL1 Pin=D12-1
+Added Pin To Net: NetName=COL1 Pin=STM1-5
+Added Net: Name=COL1
+Added Pin To Net: NetName=NetD10_2 Pin=D10-2
+Added Pin To Net: NetName=NetD10_2 Pin=SW10-2
+Added Net: Name=NetD10_2
+Added Pin To Net: NetName=NetD11_2 Pin=D11-2
+Added Pin To Net: NetName=NetD11_2 Pin=SW11-2
+Added Net: Name=NetD11_2
+Added Pin To Net: NetName=NetD12_2 Pin=D12-2
+Added Pin To Net: NetName=NetD12_2 Pin=SW12-2
+Added Net: Name=NetD12_2
+Added Member To Class: ClassName=schematic Member=Component D10 100v
+Added Member To Class: ClassName=schematic Member=Component D11 100v
+Added Member To Class: ClassName=schematic Member=Component D12 100v
+Added Member To Class: ClassName=schematic Member=Component SW10 Cherry MX with an LED
+Added Member To Class: ClassName=schematic Member=Component SW11 Cherry MX with an LED
+Added Member To Class: ClassName=schematic Member=Component SW12 Cherry MX with an LED
+Added Room: Name=schematic

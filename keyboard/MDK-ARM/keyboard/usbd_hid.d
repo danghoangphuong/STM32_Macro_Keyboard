@@ -42,3 +42,4 @@ keyboard\usbd_hid.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd_ex.h
 keyboard\usbd_hid.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
 keyboard\usbd_hid.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
 keyboard\usbd_hid.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
+keyboard\usbd_hid.o: ../Lib/hid_report_desc.h

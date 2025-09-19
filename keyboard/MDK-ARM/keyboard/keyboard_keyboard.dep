@@ -41,7 +41,7 @@ I (C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5EC7840C)
 I (C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5EC7840C)
 I (C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\include\string.h)(0x5EC78414)
 I (C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x5EC78406)
-I (../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc/usbd_hid.h)(0x68BE694A)
+I (../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc/usbd_hid.h)(0x68CC313C)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h)(0x67FFE3C8)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h)(0x67FFE3C8)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h)(0x67FFE3C8)
@@ -826,6 +826,45 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x67FFE3CF)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd.h)(0x67FFE3CF)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_usb.h)(0x67FFE3CF)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd_ex.h)(0x67FFE3CF)
+F (..\Lib\hid_report_desc.c)(0x68CC31D4)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../Lib -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc --gnu-I.\RTE\_keyboard-IC:\Users\Admin\AppData\Local\Arm\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include-IC:\Users\Admin\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1_bak_0\Device\Include-D__UVISION_VERSION="542" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o keyboard\hid_report_desc.o --omf_browse keyboard\hid_report_desc.crf --depend keyboard\hid_report_desc.d)
+I (..\Lib\hid_report_desc.h)(0x68CC31D5)
+I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h)(0x67FFE3C8)
+I (../USB_DEVICE/Target/usbd_conf.h)(0x68B3089A)
+I (C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5EC7840C)
+I (C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5EC7840C)
+I (C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\include\string.h)(0x5EC78414)
+I (../Core/Inc/main.h)(0x68BA50D9)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h)(0x67FFE3CF)
+I (../Core/Inc/stm32f1xx_hal_conf.h)(0x68B32E11)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h)(0x67FFE3CF)
+I (../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h)(0x67FFE3CF)
+I (../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h)(0x67FFE3CF)
+I (../Drivers/CMSIS/Include/core_cm3.h)(0x67FFE3C7)
+I (C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\include\stdint.h)(0x5EC7840C)
+I (../Drivers/CMSIS/Include/cmsis_version.h)(0x67FFE3C7)
+I (../Drivers/CMSIS/Include/cmsis_compiler.h)(0x67FFE3C7)
+I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x67FFE3C7)
+I (../Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h)(0x67FFE3CF)
+I (C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\include\stddef.h)(0x5EC7840C)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio_ex.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_exti.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma_ex.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_cortex.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc_ex.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_flash_ex.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_i2c.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_usb.h)(0x67FFE3CF)
+I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd_ex.h)(0x67FFE3CF)
 F (../USB_DEVICE/App/usb_device.c)(0x68B3089A)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../Lib -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc --gnu-I.\RTE\_keyboard-IC:\Users\Admin\AppData\Local\Arm\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include-IC:\Users\Admin\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1_bak_0\Device\Include-D__UVISION_VERSION="542" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o keyboard\usb_device.o --omf_browse keyboard\usb_device.crf --depend keyboard\usb_device.d)
 I (../USB_DEVICE/App/usb_device.h)(0x68B3089A)
 I (../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h)(0x67FFE3CF)
@@ -869,7 +908,7 @@ I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h)(0x67FFE3C8)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h)(0x67FFE3C8)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h)(0x67FFE3C8)
 I (../USB_DEVICE/App/usbd_desc.h)(0x68B3089B)
-I (../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc/usbd_hid.h)(0x68BE694A)
+I (../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc/usbd_hid.h)(0x68CC313C)
 F (../USB_DEVICE/App/usbd_desc.c)(0x68B3089B)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../Lib -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc --gnu-I.\RTE\_keyboard-IC:\Users\Admin\AppData\Local\Arm\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include-IC:\Users\Admin\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1_bak_0\Device\Include-D__UVISION_VERSION="542" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o keyboard\usbd_desc.o --omf_browse keyboard\usbd_desc.crf --depend keyboard\usbd_desc.d)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h)(0x67FFE3C8)
 I (../USB_DEVICE/Target/usbd_conf.h)(0x68B3089A)
@@ -953,7 +992,7 @@ I (../Core/Inc/main.h)(0x68BA50D9)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h)(0x67FFE3C8)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h)(0x67FFE3C8)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h)(0x67FFE3C8)
-I (../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc/usbd_hid.h)(0x68BE694A)
+I (../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc/usbd_hid.h)(0x68CC313C)
 F (../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c)(0x67FFE3C8)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../Lib -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc --gnu-I.\RTE\_keyboard-IC:\Users\Admin\AppData\Local\Arm\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include-IC:\Users\Admin\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1_bak_0\Device\Include-D__UVISION_VERSION="542" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o keyboard\usbd_core.o --omf_browse keyboard\usbd_core.crf --depend keyboard\usbd_core.d)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h)(0x67FFE3C8)
 I (../USB_DEVICE/Target/usbd_conf.h)(0x68B3089A)
@@ -1077,8 +1116,8 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_usb.h)(0x67FFE3CF)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd_ex.h)(0x67FFE3CF)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h)(0x67FFE3C8)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h)(0x67FFE3C8)
-F (../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Src/usbd_hid.c)(0x68BE6950)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../Lib -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc --gnu-I.\RTE\_keyboard-IC:\Users\Admin\AppData\Local\Arm\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include-IC:\Users\Admin\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1_bak_0\Device\Include-D__UVISION_VERSION="542" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o keyboard\usbd_hid.o --omf_browse keyboard\usbd_hid.crf --depend keyboard\usbd_hid.d)
-I (../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc/usbd_hid.h)(0x68BE694A)
+F (../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Src/usbd_hid.c)(0x68CC3378)(--c99 -c --cpu Cortex-M3 -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc -I ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I ../Drivers/CMSIS/Include -I ../Lib -I ../USB_DEVICE/App -I ../USB_DEVICE/Target -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc --gnu-I.\RTE\_keyboard-IC:\Users\Admin\AppData\Local\Arm\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include-IC:\Users\Admin\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1_bak_0\Device\Include-D__UVISION_VERSION="542" -DSTM32F10X_MD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xB-o keyboard\usbd_hid.o --omf_browse keyboard\usbd_hid.crf --depend keyboard\usbd_hid.d)
+I (../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc/usbd_hid.h)(0x68CC313C)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h)(0x67FFE3C8)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h)(0x67FFE3C8)
 I (../USB_DEVICE/Target/usbd_conf.h)(0x68B3089A)
@@ -1119,3 +1158,4 @@ I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_ll_usb.h)(0x67FFE3CF)
 I (../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pcd_ex.h)(0x67FFE3CF)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h)(0x67FFE3C8)
 I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h)(0x67FFE3C8)
+I (../Lib/hid_report_desc.h)(0x68CC31D5)

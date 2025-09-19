@@ -25,6 +25,7 @@
 "keyboard\fonts.o"
 "keyboard\ssd1306.o"
 "keyboard\ds1307.o"
+"keyboard\hid_report_desc.o"
 "keyboard\usb_device.o"
 "keyboard\usbd_desc.o"
 "keyboard\usbd_conf.o"

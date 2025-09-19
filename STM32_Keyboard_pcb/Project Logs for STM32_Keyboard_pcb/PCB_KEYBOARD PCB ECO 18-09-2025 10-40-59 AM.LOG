@@ -1,0 +1,25 @@
+Change Component Designator: OldDesignator=SW1 NewDesignator=SW4
+Change Component Designator: OldDesignator=SW2 NewDesignator=SW3
+Change Component Designator: OldDesignator=SW3 NewDesignator=SW1
+Change Component Designator: OldDesignator=SW4 NewDesignator=SW2
+Change Component Designator: OldDesignator=SW5 NewDesignator=SW8
+Change Component Designator: OldDesignator=SW6 NewDesignator=SW7
+Change Component Designator: OldDesignator=SW7 NewDesignator=SW5
+Change Component Designator: OldDesignator=SW8 NewDesignator=SW6
+Change Component Designator: OldDesignator=SW9 NewDesignator=SW12
+Change Component Designator: OldDesignator=SW10 NewDesignator=SW11
+Change Component Designator: OldDesignator=SW11 NewDesignator=SW9
+Change Component Designator: OldDesignator=SW12 NewDesignator=SW10
+Change Component Designator: OldDesignator=SW13 NewDesignator=SW14
+Change Component Designator: OldDesignator=SW14 NewDesignator=SW13
+Added Member To Class: ClassName=schematic Member=Component D3 100v
+Added Member To Class: ClassName=schematic Member=Component D5 100v
+Added Member To Class: ClassName=schematic Member=Component D7 100v
+Added Member To Class: ClassName=schematic Member=Component D8 100v
+Added Member To Class: ClassName=schematic Member=Component D9 100v
+Added Member To Class: ClassName=schematic Member=Component SW4 Cherry MX with an LED
+Added Member To Class: ClassName=schematic Member=Component SW6 Cherry MX with an LED
+Added Member To Class: ClassName=schematic Member=Component SW8 Cherry MX with an LED
+Added Member To Class: ClassName=schematic Member=Component SW9 Cherry MX with an LED
+Added Member To Class: ClassName=schematic Member=Component SW11 Cherry MX with an LED
+Added Room: Name=schematic
