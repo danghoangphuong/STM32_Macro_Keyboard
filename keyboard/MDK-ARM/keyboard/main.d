@@ -38,6 +38,7 @@ keyboard\main.o: ../USB_DEVICE/Target/usbd_conf.h
 keyboard\main.o: C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 keyboard\main.o: C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 keyboard\main.o: C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+keyboard\main.o: ../Lib/hid_report_desc.h
 keyboard\main.o: C:\Users\Admin\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 keyboard\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc/usbd_hid.h
 keyboard\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h

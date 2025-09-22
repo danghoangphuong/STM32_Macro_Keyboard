@@ -46,15 +46,7 @@ EndBSPDependencies */
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_hid.h"
 #include "usbd_ctlreq.h"
-#include "hid_report_desc.h"
 
-#define HID_MOUSE_ReportDesc        HID_ReportDesc_FS
-
-#undef HID_MOUSE_REPORT_DESC_SIZE
-#define HID_MOUSE_REPORT_DESC_SIZE  (114U)
-
-extern uint8_t HID_ReportDesc_FS[];
-extern const uint16_t HID_ReportDesc_FS_Size;
 
 /** @addtogroup STM32_USB_DEVICE_LIBRARY
   * @{
@@ -166,7 +158,7 @@ __ALIGN_BEGIN static uint8_t USBD_HID_CfgFSDesc[USB_HID_CONFIG_DESC_SIZ]  __ALIG
   0x01,         /*bNumEndpoints*/
   0x03,         /*bInterfaceClass: HID*/
   0x01,         /*bInterfaceSubClass : 1=BOOT, 0=no boot*/
-  0x01,         /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
+  0x02,         /*nInterfaceProtocol : 0=none, 1=keyboard, 2=mouse*/
   0,            /*iInterface: Index of string descriptor*/
   /******************** Descriptor of Joystick Mouse HID ********************/
   /* 18 */
@@ -325,7 +317,52 @@ __ALIGN_BEGIN static uint8_t USBD_HID_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_
 
 __ALIGN_BEGIN static uint8_t HID_MOUSE_ReportDesc[HID_MOUSE_REPORT_DESC_SIZE]  __ALIGN_END =
 {
+//  0x05,   0x01,
+//  0x09,   0x02,
+//  0xA1,   0x01,
+//  0x09,   0x01,
 
+//  0xA1,   0x00,
+//  0x05,   0x09,
+//  0x19,   0x01,
+//  0x29,   0x03,
+
+//  0x15,   0x00,
+//  0x25,   0x01,
+//  0x95,   0x03,
+//  0x75,   0x01,
+
+//  0x81,   0x02,
+//  0x95,   0x01,
+//  0x75,   0x05,
+//  0x81,   0x01,
+
+//  0x05,   0x01,
+//  0x09,   0x30,
+//  0x09,   0x31,
+//  0x09,   0x38,
+
+//  0x15,   0x81,
+//  0x25,   0x7F,
+//  0x75,   0x08,
+//  0x95,   0x03,
+
+//  0x81,   0x06,
+//  0xC0,   0x09,
+//  0x3c,   0x05,
+//  0xff,   0x09,
+
+//  0x01,   0x15,
+//  0x00,   0x25,
+//  0x01,   0x75,
+//  0x01,   0x95,
+
+//  0x02,   0xb1,
+//  0x22,   0x75,
+//  0x06,   0x95,
+//  0x01,   0xb1,
+
+//  0x01,   0xc0
 };
 
 /**

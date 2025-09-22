@@ -99,14 +99,21 @@ DS1307_Typedef time_data;
 typedef enum
 {
 	KEY_PrtSc = 1, //0x46 
-	KEY_CUT = 2, // 0x01 + 0x1B office
-	KEY_COPY = 3, // 0x01 + 0x06 office
-	KEY_PASTE = 4, // 0x01 + 0x19 office
-	KEY_MUTE = 5, // 0xE2 media
-	KEY_UNDO = 6, // 0x01 + 0x1D  office
-	KEY_REDO = 7, // 0x01 + 0x1C office
-	KEY_PLAY_PAUSE = 8, // 0xCD  media
-	KEY_NEXT_TRACK = 9 // 0xB5 media
+	KEY_CHANGE_WINDOW = 2, // alt + tab
+	KEY_LOCK_PC = 3, // win + L
+	KEY_TASK_MANAGER = 4, // Ctrl + Shift + esc
+	KEY_CUT = 5, // 0x01 + 0x1B office
+	KEY_COPY = 6, // 0x01 + 0x06 office
+	KEY_PASTE = 7, // 0x01 + 0x19 office
+	KEY_UNDO = 8, // 0x01 + 0x1D  office
+	KEY_REDO = 9, // 0x01 + 0x1C office
+	KEY_SELECT_ALL = 10, // ctrl + A
+	KEY_MUTE = 11, // 0xE2 media
+	KEY_PLAY_PAUSE = 12, // 0xCD  media
+	KEY_NEXT_TRACK = 13, // 0xB5 media
+	KEY_PREV_TRACK = 14, 
+	KEY_CLOSE_TAB = 15, // CTRL + W
+	KEY_NEW_TAB = 16 //ctrl + T
 }Macro_key;
 
 
@@ -460,31 +467,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  
-	  // Receive ADC value: 0 - 4095 map 0 - 100
-	Keyboard_Handle();
-	static uint32_t time = 0;
-	volume_now = adc_val[0] * 100 / 4095;
-	if(HAL_GetTick() - time > 20)
-	{
-		Oled_display();
-		
-		Key_press_display_handle();
-		if (volume_now > volume_old + 1)   
-		{
-			HID_VolumeControl(); 
-			volume_old++;         
-		}
-		else if (volume_now + 1 < volume_old) 
-		{
-			HID_VolumeControl(); 
-			volume_old--;         
-		}
-		time = HAL_GetTick();
-	}
-
   }
-  /* USER A END 3 */
+  /* USER CODE END 3 */
 }
 
 /**
@@ -716,22 +700,32 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, ROW1_Pin|ROW2_Pin|ROW3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(ROW1_out_GPIO_Port, ROW1_out_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : COL3_Pin COL2_Pin */
-  GPIO_InitStruct.Pin = COL3_Pin|COL2_Pin;
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, ROW2_out_Pin|ROW3_out_Pin|ROW4_out_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : COL4_in_Pin COL3_in_Pin COL2_in_Pin */
+  GPIO_InitStruct.Pin = COL4_in_Pin|COL3_in_Pin|COL2_in_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : COL1_Pin */
-  GPIO_InitStruct.Pin = COL1_Pin;
+  /*Configure GPIO pin : COL1_in_Pin */
+  GPIO_InitStruct.Pin = COL1_in_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(COL1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(COL1_in_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : ROW1_Pin ROW2_Pin ROW3_Pin */
-  GPIO_InitStruct.Pin = ROW1_Pin|ROW2_Pin|ROW3_Pin;
+  /*Configure GPIO pin : ROW1_out_Pin */
+  GPIO_InitStruct.Pin = ROW1_out_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(ROW1_out_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : ROW2_out_Pin ROW3_out_Pin ROW4_out_Pin */
+  GPIO_InitStruct.Pin = ROW2_out_Pin|ROW3_out_Pin|ROW4_out_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
