@@ -68,23 +68,23 @@ static void MX_I2C2_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 #include "stdio.h"
+#include "stdarg.h"
 #include "stdbool.h"
-#include "usbd_hid.h"
 #include "fonts.h"
 #include "ssd1306.h"
 #include "DS1307.h"
+#include "Button_matrix.h"
 
 #define ADC_BUFF_LEN 32		// sample to moving average filter
 #define ADC_THRESHOLD 80 // threshold for changing %volume
 #define VOLUME_MAX 100	//MAX VOLUME
 
+#include "usbd_customhid.h"
 extern USBD_HandleTypeDef hUsbDeviceFS;
 
-uint32_t KB_Scan();
-void Key_board_send_report(uint32_t pressed_key);
-long map(long x, long in_min, long in_max, long out_min, long out_max);
+void Send_key(uint8_t modifier, uint8_t keycode);
+void Send_consumer(uint16_t keycode);
 
-uint32_t key;
 uint16_t adc_val[ADC_BUFF_LEN];
 uint8_t volume = 0;
 uint16_t volume_now, volume_old = 0;
@@ -92,229 +92,139 @@ uint16_t volume_now, volume_old = 0;
 char buff_time[20];
 char buff_day[20];
 
+char buff_uart[40];
 //===================Time==================
 DS1307_Typedef time_data;
 
+//====================UART DEBUG============
+void Print_uart(const char*format,...)
+{
+	for(uint8_t i=0; i<40; i++)
+	{
+		buff_uart[i] = 0;
+	}
+	va_list args;
+	va_start(args, format);
+	vsnprintf(buff_uart, sizeof(buff_uart), format, args);
+	va_end(args);
+	HAL_UART_Transmit(&huart1, (uint8_t*)buff_uart, 40, 1000);
+}
+
 //=========================key press handle=============
+Matrix_Pin_Typedef rowS[4] = {
+	{GPIOA, GPIO_PIN_15}, // ROW 1 - 4
+	{GPIOB, GPIO_PIN_3},
+	{GPIOB, GPIO_PIN_4},
+	{GPIOB, GPIO_PIN_5},
+};
+
+Matrix_Pin_Typedef colS[4] = {
+	{GPIOA, GPIO_PIN_8}, // col 1 - 4
+	{GPIOB, GPIO_PIN_15},
+	{GPIOB, GPIO_PIN_14},
+	{GPIOB, GPIO_PIN_13},
+};
+
+
+Matrix_Typedef button_matrix = {
+	.num_row = 4, 
+	.num_col = 4,
+	.row_pins = rowS,
+	.col_pins = colS
+};
+
 typedef enum
 {
-	KEY_PrtSc = 1, //0x46 
-	KEY_CHANGE_WINDOW = 2, // alt + tab
-	KEY_LOCK_PC = 3, // win + L
-	KEY_TASK_MANAGER = 4, // Ctrl + Shift + esc
-	KEY_CUT = 5, // 0x01 + 0x1B office
-	KEY_COPY = 6, // 0x01 + 0x06 office
-	KEY_PASTE = 7, // 0x01 + 0x19 office
-	KEY_UNDO = 8, // 0x01 + 0x1D  office
-	KEY_REDO = 9, // 0x01 + 0x1C office
-	KEY_SELECT_ALL = 10, // ctrl + A
-	KEY_MUTE = 11, // 0xE2 media
-	KEY_PLAY_PAUSE = 12, // 0xCD  media
-	KEY_NEXT_TRACK = 13, // 0xB5 media
-	KEY_PREV_TRACK = 14, 
-	KEY_CLOSE_TAB = 15, // CTRL + W
-	KEY_NEW_TAB = 16 //ctrl + T
-}Macro_key;
-
+	KEY_TYPE_KEYBOARD,
+	KEY_TYPE_CONSUMER
+}KeyType_t;
 
 typedef struct
 {
-	uint8_t id;
+	KeyType_t type;
 	uint8_t modifier;
-	uint8_t reserved;
-	uint8_t keycode1;
-	uint8_t keycode2;
-	uint8_t keycode3;
-	uint8_t keycode4;
-	uint8_t keycode5;
-	uint8_t keycode6;	
-}Keyboard_Report_Des;
+	uint16_t keycode;
+}KeyMap_t;
 
-Keyboard_Report_Des hid_keyboard = {0x01,0,0,0,0,0,0,0,0};
+KeyMap_t macro_key[16] = {
+	{KEY_TYPE_KEYBOARD, 0x00, 0x46}, 	// KEY_PrtSc 1 
+	{KEY_TYPE_KEYBOARD, 0x0A, 0x16},	// KEY_SNIPPING_TOOL 2
+	{KEY_TYPE_KEYBOARD, 0x08, 0x07},	//KEY_SHOW_DESKTOP 3
+	{KEY_TYPE_KEYBOARD, 0x04, 0x3D},	// KEY_CLOSE_WINDOW 4
+	{KEY_TYPE_KEYBOARD, 0x01, 0x1B},	//KEY_CUT 5
+	{KEY_TYPE_KEYBOARD, 0x01, 0x06},	//KEY_COPY 6
+	{KEY_TYPE_KEYBOARD, 0x01, 0x19},	//KEY_PASTE 7
+	{KEY_TYPE_KEYBOARD, 0x01, 0x1D},	//KEY_UNDO 8
+	{KEY_TYPE_KEYBOARD, 0x01, 0x1C},	//KEY_REDO 9
+	{KEY_TYPE_KEYBOARD, 0x01, 0x04},	// KEY_SELECT_ALL 10
+	{KEY_TYPE_CONSUMER, 0x00, 0xE2},	// KEY_MUTE 11
+	{KEY_TYPE_CONSUMER, 0x00, 0xCD},	//KEY_PLAY_PAUSE 12
+	{KEY_TYPE_CONSUMER, 0x00, 0xB5},	//KEY_NEXT_TRACK 13
+	{KEY_TYPE_CONSUMER, 0x00, 0xB6},	//KEY_PREV_TRACK 14
+	{KEY_TYPE_KEYBOARD, 0x01, 0x1A},	// KEY_CLOSE_TAB 15
+	{KEY_TYPE_KEYBOARD, 0x01, 0x17}		//KEY_NEW_TAB 16
+};
 
-uint32_t KB_Scan()	// Scan button
+void Matrix_key_press_Callback(uint8_t key, KeyEvent_t key_event)
 {
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 0);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4|GPIO_PIN_5, 1);
-	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8))
+	KeyMap_t key_map = macro_key[key-1];
+	if(key_event == KEY_PRESS)
 	{
-		return KEY_PrtSc;
+		if(key_map.type == KEY_TYPE_KEYBOARD)
+		{
+			Send_key(key_map.modifier, key_map.keycode);
+			Print_uart("Key %d sent, type keyboard\n", key);
+		}
+		else if(key_map.type == KEY_TYPE_CONSUMER)
+		{
+			Send_consumer(key_map.keycode);
+			Print_uart("Key %d sent, type consumer\n", key);
+		}
 	}
-	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15))
-	{
-		return KEY_CUT;
-	}
-	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14))
-	{
-		return KEY_COPY;
-	}
-	
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, 0);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3|GPIO_PIN_5, 1);
-	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8))
-	{
-		return KEY_PASTE;
-	}
-	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15))
-	{
-		return KEY_MUTE;
-	}
-	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14))
-	{
-		return KEY_UNDO;
-	}
-	
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, 0);
-	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3|GPIO_PIN_4, 1);
-	if(!HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8))
-	{
-		return KEY_REDO;
-	}
-	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_15))
-	{
-		return KEY_PLAY_PAUSE;
-	}
-	if(!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_14))
-	{
-		return KEY_NEXT_TRACK;
-	}
-	return 0;
 }
 
 void Send_key(uint8_t modifier, uint8_t keycode)
 {
-	hid_keyboard.modifier = modifier; // Ctrl, shift, alt
-	hid_keyboard.keycode1 = keycode; // copy, paste, cut, ...
+	uint8_t keyboard_report[9] = {0};
+
+	keyboard_report[0] = 0x01;
+	keyboard_report[1] = modifier;
+	keyboard_report[2] = 0;
+	keyboard_report[3] = keycode;
 	
-
-    USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&hid_keyboard, sizeof(hid_keyboard));
-    HAL_Delay(50);
-
-	hid_keyboard.modifier = 0x00; // Ctrl, shift, alt
-	hid_keyboard.keycode1 = 0x00; // copy, paste, cut, ...
-    USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&hid_keyboard, sizeof(hid_keyboard));
-    HAL_Delay(50);
-}
-
-void Send_consumer(uint8_t keycode)
-{
-	uint8_t consumer_report[2] = {0x02, 0x00};
-
-	consumer_report[1] = keycode;
-	USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&consumer_report, sizeof(consumer_report));
-    HAL_Delay(50);
+	Print_uart("ID: %02X, Modifier: %02X, Keycode: %02X\n", keyboard_report[0], keyboard_report[1], keyboard_report[3]);
+	USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&keyboard_report, sizeof(keyboard_report));
+    HAL_Delay(20);
 	
-	consumer_report[1] = 0x00; // copy, paste, cut, ...
-    USBD_HID_SendReport(&hUsbDeviceFS, (uint8_t*)&consumer_report, sizeof(consumer_report));
-    HAL_Delay(50);
+	memset(keyboard_report, 0, sizeof(keyboard_report));
+	keyboard_report[0] = 0x01;
+    USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, keyboard_report, sizeof(keyboard_report));
+    HAL_Delay(20);
 }
 
-
-void Keyboard_Handle(void)
+void Send_consumer(uint16_t keycode)
 {
-	key = KB_Scan();
-	switch(key)
-	{
-		case KEY_PrtSc:
-			Send_key(0x00, 0x46);
-			break;
-		case KEY_CUT: // num 2
-			Send_key(0x01, 0x1B);
-			break;
-		case KEY_COPY: //num 3
-			Send_key(0x01,0x06);
-			break;
-		case KEY_PASTE: // num 4
-			Send_key(0x01,0x19);
-			break;
-		case KEY_MUTE:	// num 5
-			Send_consumer(0x04);
-			break;
-		case KEY_UNDO:	// num 6
-			Send_key(0x01,0x1D);
-			break;
-		case KEY_REDO:	// num 7
-			Send_key(0x01,0x1C);
-			break;
-		case KEY_PLAY_PAUSE: // num 8
-			Send_consumer(0x08);
-			break;
-		case KEY_NEXT_TRACK: // num 9
-			Send_consumer(0x10);
-			break;
-		default:
-			break;
-			
-	}
+    uint8_t consumer_report[3];
+
+	consumer_report[0] = 0x02;
+	consumer_report[1] = keycode & 0xFF; // LSB
+	consumer_report[2] = keycode >> 8;	//MSB
+	
+	Print_uart("ID: %02X, Keycode: %02X\n", consumer_report[0], consumer_report[1]);
+    USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, consumer_report, sizeof(consumer_report));
+    HAL_Delay(20);
+
+    // Send release
+	consumer_report[1] = 0;
+	consumer_report[2] = 0;
+    USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, consumer_report, sizeof(consumer_report));
+    HAL_Delay(20);
 }
+	
 //==========================Display handle==============
 const char dow_arr[][10] = {{"SUN"},{"MON"},{"TUE"},{"WED"},
 							{"THU"},{"FRI"},{"SAT"}}; //day of week 
-
-					
-uint32_t time_update = 0;
-uint8_t is_clear_screen = 0;
-uint8_t clear_x, clear_y = 0;
-							
-void Oled_display_status(char* key_noti, uint8_t x, uint8_t y)
-{
-	SSD1306_GotoXY(x, y);
-	SSD1306_Puts(key_noti, &Font_7x10, 1);
-	SSD1306_UpdateScreen();
 	
-	clear_x = x;
-	clear_y = y;
-	is_clear_screen = 1;
-	time_update = HAL_GetTick();
-}
-
-void Oled_clear_status()
-{
-	if(is_clear_screen && HAL_GetTick() - time_update >= 1000)
-	{
-		SSD1306_GotoXY(clear_x, clear_y);
-		SSD1306_Puts("                 ", &Font_7x10, 1);
-		SSD1306_UpdateScreen();
-		is_clear_screen = 0;
-	}
-}
-
-void Key_press_display_handle()
-{
-	switch(key)
-	{
-		case KEY_PrtSc:
-			Oled_display_status("Screen captured!", 10, 40);
-			break;
-		case KEY_CUT:
-			Oled_display_status("Cut!", 40, 40);
-			break;
-		case KEY_COPY:
-			Oled_display_status("Copied!", 40, 40);
-			break;
-		case KEY_PASTE:
-			Oled_display_status("Pasted!", 40, 40);
-			break;
-		case KEY_MUTE:
-			Oled_display_status("Sound off!", 20, 40);
-			break;
-		case KEY_UNDO:
-			Oled_display_status("Undo!", 40, 40);
-			break;
-		case KEY_REDO:
-			Oled_display_status("Redo!", 40, 40);
-			break;
-		case KEY_PLAY_PAUSE:
-			Oled_display_status("Pause/ Play!", 20, 40);
-			break;
-		case KEY_NEXT_TRACK:
-			Oled_display_status("Next track!", 20, 40);
-			break;
-		default:
-			break;
-	}
-}
-
 void Oled_display() // display date, month, year and keyboard map
 {
 	DS1307_read(&time_data);
@@ -335,12 +245,7 @@ void Oled_display() // display date, month, year and keyboard map
     sprintf(buff_day, "%02d/%02d/20%02d", time_data.date, time_data.month, time_data.year);
     SSD1306_Puts(buff_day, &Font_7x10, 1);
 	
-//	SSD1306_GotoXY(5, 5);
-//    SSD1306_Puts("hello", &Font_7x10, 1);
-	
 	SSD1306_UpdateScreen();
-	
-	Oled_clear_status();
 }
 
 //======================Adjust volume==================
@@ -379,31 +284,34 @@ uint8_t Check_adc_threshold()
 void HID_VolumeControl() // rotary switch adjust volume
 {
 	uint8_t is_adjust = Check_adc_threshold(); // check adjust allowance
-	 // Report ID (0x02) + 1 byte data
-    uint8_t report[2];
+    uint8_t report[3];
 
     report[0] = 0x02;   // Report ID
     report[1] = 0x00;   // default release
+	report[2] = 0x00;   // default release
 	
 	if(adc_val[0] < 30) adc_val[0] = 0;
 	if(adc_val[0] > 4050) adc_val[0] = 4050;
 	
     if(is_adjust == 1)   // Volume Up
 	{
-		report[1] = 0x01;
+		report[1] = 0xE9 & 0xFF;
+		report[2] = (0xE9 >> 8) & 0xFF;
 	}		
         
     else if(is_adjust == 2)  // Volume Down
 	{
-		report[1] = 0x02;
+		report[1] = 0xEA & 0xFF;
+		report[2] = (0xEA >> 8) & 0xFF;
 	}
 
-    USBD_HID_SendReport(&hUsbDeviceFS, report, sizeof(report));
+    USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, report, sizeof(report));
     HAL_Delay(10);
 
     // Release 
     report[1] = 0x00;
-    USBD_HID_SendReport(&hUsbDeviceFS, report, sizeof(report));
+	report[2] = 0x00;
+    USBD_CUSTOM_HID_SendReport(&hUsbDeviceFS, report, sizeof(report));
     HAL_Delay(10);
 }
 
@@ -451,10 +359,10 @@ int main(void)
   HAL_ADCEx_Calibration_Start(&hadc1);
   HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_val, ADC_BUFF_LEN);
   
-//  time_data.hour = 14;
-//  time_data.min = 15;
+//  time_data.hour = 15;
+//  time_data.min = 32;
 //  time_data.sec = 30;
-//  time_data.date = 11;
+//  time_data.date = 25;
 //  time_data.month = 9;
 //  time_data.year = 25;
 //  DS1307_write(&time_data);
@@ -464,6 +372,16 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  Matrix_handle(&button_matrix);
+	  static uint32_t time = 0;
+	  if(HAL_GetTick() - time > 100)
+	  {
+		  HID_VolumeControl();
+		  Oled_display();
+		  time = HAL_GetTick();
+	  }
+	  
+	  
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

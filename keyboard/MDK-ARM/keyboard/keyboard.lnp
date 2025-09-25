@@ -26,13 +26,15 @@
 "keyboard\ssd1306.o"
 "keyboard\ds1307.o"
 "keyboard\hid_report_desc.o"
+"keyboard\button_matrix.o"
 "keyboard\usb_device.o"
 "keyboard\usbd_desc.o"
+"keyboard\usbd_custom_hid_if.o"
 "keyboard\usbd_conf.o"
 "keyboard\usbd_core.o"
 "keyboard\usbd_ctlreq.o"
 "keyboard\usbd_ioreq.o"
-"keyboard\usbd_hid.o"
+"keyboard\usbd_customhid.o"
 --strict --scatter "keyboard\keyboard.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

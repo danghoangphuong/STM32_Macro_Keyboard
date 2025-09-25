@@ -43,4 +43,5 @@ keyboard\usb_device.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_
 keyboard\usb_device.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
 keyboard\usb_device.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
 keyboard\usb_device.o: ../USB_DEVICE/App/usbd_desc.h
-keyboard\usb_device.o: ../Middlewares/ST/STM32_USB_Device_Library/Class/HID/Inc/usbd_hid.h
+keyboard\usb_device.o: ../Middlewares/ST/STM32_USB_Device_Library/Class/CustomHID/Inc/usbd_customhid.h
+keyboard\usb_device.o: ../USB_DEVICE/App/usbd_custom_hid_if.h

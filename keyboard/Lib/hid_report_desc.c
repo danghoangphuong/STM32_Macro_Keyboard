@@ -83,8 +83,12 @@ __ALIGN_BEGIN uint8_t HID_ReportDesc_FS[] __ALIGN_END =
 	0x09, 0xB5,        //   USAGE (Scan Next Track)
 	0x81, 0x02,        
 
+	// -------- Bit 5 --------
+	0x95, 0x01,        
+	0x09, 0xB6,        //   USAGE (Scan Previous Track)
+	0x81, 0x02, 
 	// -------- Padding --------
-	0x95, 0x03,        //   REPORT_COUNT (3) -> padding bits (bit5..bit7)
+	0x95, 0x02,        //   REPORT_COUNT (3) -> padding bits (bit6..bit7)
 	0x81, 0x03,        //   INPUT (Const,Var,Abs)
 
 	0xC0              // END_COLLECTION
